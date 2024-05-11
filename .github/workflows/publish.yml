@@ -29,6 +29,8 @@ jobs:
           poetry install --sync --no-root
       - name: Install project
         run: poetry install --only-root
+      - name: Test
+        run: poetry run pytest
       - name: Build
         run: poetry build
       - name: Upload artifact
