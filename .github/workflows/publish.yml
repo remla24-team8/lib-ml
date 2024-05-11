@@ -1,0 +1,58 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  release:
+    types: [ published ]
+
+jobs:
+  build-test:
+    name: Build-Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+          py-version: ['3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setting up Python
+        id: setup-py
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.py-version }}
+      - name: Poetry
+        run: pipx install poetry==1.8.3
+      - name: Poetry install dependencies
+        run: |
+          poetry env use '${{ steps.setup-py.outputs.python-path }}'
+          poetry install --sync --no-root
+      - name: Install project
+        run: poetry install --only-root
+      - name: Build
+        run: poetry build
+      - name: Upload artifact
+        if: ${{ matrix.py-version == '3.12' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: ${{ github.workspace }}/dist/
+          if-no-files-found: error
+  publish:
+    needs: [buildtest]
+    name: Publish
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: ${{ github.workspace }}/dist/
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Publish a Python distribution to PyPI
+      if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+      uses: pypa/gh-action-pypi-publish@release/v1
