@@ -12,10 +12,19 @@ Contains the pre-processing logic for data that is used for training or queries.
 
 ## Usage
 
-```
-import lib_ml
+Install with
 
-print(lib_ml.foo.bar())
+```
+pip install remla24-team8-lib-ml
+
+```
+
+Use as
+
+```
+from lib_ml import DataProcessor 
+
+data_processor = DataProcessor()
 
 ```
 
