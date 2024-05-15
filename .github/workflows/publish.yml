@@ -31,10 +31,23 @@ jobs:
         run: poetry install --only-root
       - name: Test
         run: poetry run pytest
+      - name: Install semver
+        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        run: pipx install semver
+      - name: Check if tag starts with 'v'
+        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        run: |
+          [[ ${{ github.event.release.tag_name }} == v* ]]
+      - name: Check if semver and if it matches
+        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        run: |
+          OUTPUT="${TAG#v}"
+          pysemver check "$OUTPUT"
+          [[ $(poetry version -s) == OUTPUT ]]
       - name: Build
         run: poetry build
       - name: Upload artifact
-        if: ${{ matrix.py-version == '3.12' }}
+        if: ${{ matrix.py-version == '3.12' && github.event_name == 'release' && github.event.action == 'published' }}
         uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -53,9 +66,5 @@ jobs:
       with:
         name: dist
         path: ${{ github.workspace }}/dist/
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
     - name: PyPI release
       uses: pypa/gh-action-pypi-publish@release/v1
