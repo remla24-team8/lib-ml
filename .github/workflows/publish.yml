@@ -44,7 +44,7 @@ jobs:
           TAG=${{ github.event.release.tag_name }}
           OUTPUT="${TAG#v}"
           pysemver check "$OUTPUT"
-          [[ $(poetry version -s) == OUTPUT ]]
+          [[ $(poetry version -s) == $OUTPUT ]]
       - name: Build
         run: poetry build
       - name: Upload artifact
