@@ -13,7 +13,7 @@ class DataProcessor:
     Class to process data for the model
 
     """
-    def __init__(self, token_path=None, enc_path=None, sequence_length=200):
+    def __init__(self, tokenizer_url=None, enc_path=None, sequence_length=200):
         self.sequence_length = sequence_length
 
         if enc_path:
@@ -21,9 +21,9 @@ class DataProcessor:
         else:
             self.encoder = LabelEncoder()
 
-        if token_path:
-            url = "https://drive.google.com/drive/u/1/folders/1Z0bbPcIegbLHjJcZ90CqzVPmCBLlYEkj"
-            gdown.download_folder(url, output="tokenizer")
+        if tokenizer_url:
+            
+            gdown.download_folder(tokenizer_url, output="tokenizer")
 
             tokenizer_path = "tokenizer/tokenizer.joblib"
             self.tokenizer = joblib.load(tokenizer_path)
