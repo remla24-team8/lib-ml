@@ -6,14 +6,14 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 import joblib
-
+import gdown
 
 class DataProcessor:
     """
     Class to process data for the model
 
     """
-    def __init__(self, token_path=None, enc_path=None, sequence_length=200):
+    def __init__(self, tokenizer_url=None, enc_path=None, sequence_length=200):
         self.sequence_length = sequence_length
 
         if enc_path:
@@ -21,8 +21,13 @@ class DataProcessor:
         else:
             self.encoder = LabelEncoder()
 
-        if token_path:
-            self.tokenizer = joblib.load(token_path)
+        if tokenizer_url:
+            
+            gdown.download_folder(tokenizer_url, output="tokenizer")
+
+            tokenizer_path = "tokenizer/tokenizer.joblib"
+            self.tokenizer = joblib.load(tokenizer_path)
+            
         else:
             self.tokenizer = Tokenizer(char_level=True,lower=True, oov_token = '-n-')
 
