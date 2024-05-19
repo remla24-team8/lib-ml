@@ -1,14 +1,7 @@
 # lib-ml
 
 Contains the pre-processing logic for data that is used for training or queries.
-
-• Factor out the pre-processing logic from the training pipeline.
-
-• Fetch relevant dependencies through a package manager, e.g., by creating a separate requirements.txt. (DONE)
-
-• The library is versioned automatically, e.g., by picking-up on the corresponding Git version tag. (DONE)
-
-• A workflow is used to automatically release the library in a package registry that matches the language. (As stated before, this includes either supported package registries on GitHub or repository tags in languages that support it.) (DONE)
+Is automatically versioned and uploaded to PyPi. Uses a tokenizer hosted on Google Drive, but can also load from local or create a new tokenizer and save it.
 
 ## Usage
 

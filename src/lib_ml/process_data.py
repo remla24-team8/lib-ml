@@ -7,13 +7,26 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 import joblib
 import gdown
+import os
 
 class DataProcessor:
     """
     Class to process data for the model
 
     """
-    def __init__(self, tokenizer_url=None, enc_path=None, sequence_length=200):
+    def __init__(self, tokenizer_url=None, force_dl=False, enc_path=None, sequence_length=200):
+        """
+        Initialize the DataProcessor class.
+        
+        Args:
+            tokenizer_url (str): The URL to download the tokenizer from.
+            force_dl (bool): Whether to force download the tokenizer.
+            enc_path (str): The path to the encoder.
+            sequence_length (int): The length of the sequence.
+            
+        Returns:
+            None    
+        """
         self.sequence_length = sequence_length
 
         if enc_path:
@@ -21,15 +34,19 @@ class DataProcessor:
         else:
             self.encoder = LabelEncoder()
 
+        if not force_dl:
+            if os.path.exists("tokenizer/tokenizer.joblib"):
+                self.tokenizer = joblib.load("tokenizer/tokenizer.joblib")
+                print("Tokenizer loaded from local")
+                return
+            
         if tokenizer_url:
-            
             gdown.download_folder(tokenizer_url, output="tokenizer")
-
-            tokenizer_path = "tokenizer/tokenizer.joblib"
-            self.tokenizer = joblib.load(tokenizer_path)
-            
+            self.tokenizer = joblib.load("tokenizer/tokenizer.joblib")
+            print("Tokenizer loaded from URL")
         else:
             self.tokenizer = Tokenizer(char_level=True,lower=True, oov_token = '-n-')
+            print("Tokenizer loaded from scratch")
 
 
     @staticmethod
