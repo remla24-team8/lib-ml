@@ -1,13 +1,14 @@
 # pylint: disable=E0401,R0914,C0103
 """This module contains the DataProcessor class for processing data for the model."""
 
+import os
 import pandas as pd
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 import joblib
 import gdown
-import os
+
 
 class DataProcessor:
     """
